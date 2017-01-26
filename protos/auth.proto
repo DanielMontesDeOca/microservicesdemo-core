@@ -1,0 +1,13 @@
+syntax = "proto3";
+package auth;
+
+import "user.proto";
+
+service Auth {
+  rpc Login(Credentials) returns (user.UserInfo) {}
+}
+
+message Credentials {
+  string email = 1;
+  string password = 2;
+}
