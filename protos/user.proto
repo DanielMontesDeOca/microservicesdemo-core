@@ -1,24 +1,30 @@
 syntax = "proto3";
 package user;
+option go_package = "github.com/agave/backend-base/apigateway/user";
 
 service User {
-  rpc GetUser(UserId) returns (UserInfo) {}
-  rpc CreateUser(CreateUserInfo) returns (UserInfo) {}
+  rpc Get(Id) returns (Info) {}
+  rpc Create(CreateParams) returns (Info) {}
+  rpc ValidateCredentials(Credentials) returns (Info) {}
 }
 
-message UserId {
+message Id {
   string id = 1;
 }
 
-message UserInfo {
+message Info {
   string id = 1;
   string name = 2;
   string email = 3;
   string role = 4;
 }
 
-message CreateUserInfo {
+message CreateParams {
   string name = 1;
-  string email = 2;
-  string password = 3;
+  Credentials credentials = 2;
+}
+
+message Credentials {
+  string email = 1;
+  string password = 2;
 }

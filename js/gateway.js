@@ -1,7 +1,7 @@
 const grpc = require('/var/lib/app/node_modules/grpc/src/node');
 
 class Gateway {
-  constructor(gatewayHost = 'apigateway:80') {
+  constructor(gatewayHost = 'gateway:80') {
     const user = grpc.load('/var/lib/core/protos/user.proto').user;
     const auth = grpc.load('/var/lib/core/protos/auth.proto').auth;
     const credentials = grpc.credentials.createInsecure();
@@ -29,7 +29,7 @@ class Gateway {
       name: req.name
     };
 
-    return this.request(this.user, 'createUser', data);
+    return this.request(this.user, 'create', data);
   }
 
   getUser(req) {
@@ -37,16 +37,38 @@ class Gateway {
       id: req.id
     };
 
-    return this.request(this.user, 'getUser', data);
+    return this.request(this.user, 'get', data);
   }
 
-  login(req) {
+  validateCredentials(req) {
     const data = {
       email: req.email,
       password: req.password
     };
 
-    return this.request(this.auth, 'login', data);
+    return this.request(this.user, 'validateCredentials', data);
+  }
+
+  getToken(req) {
+    const data = {
+      grant_type: req.grant_type,
+      client_id: req.client_id,
+      client_secret: req.client_secret,
+      credentials: {
+        email: req.email,
+        password: req.password
+      }
+    }
+
+    return this.request(this.auth, 'getToken', data);
+  }
+
+  validateToken(req) {
+    const data = {
+      value: req.value
+    }
+
+    return this.request(this.auth, 'validateToken', data);
   }
 }
 
